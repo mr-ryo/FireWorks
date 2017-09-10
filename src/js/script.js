@@ -15,8 +15,9 @@ const painter = new Painter({
 const timestamp = new Timestamp({
 });// end timestamp
 
-const FIREWORKS_DURATION = 500;
+const FIREWORKS_DURATION = 1000;
 const FIREWORKS_VOLUME = 1000;
+const GRAVITY = 1;
 
 const fireworks = [];
 
@@ -38,29 +39,48 @@ const addFireworks = () => {
 const drawFireworks = (array) => {
   const time = timestamp.calcTime();
   let v = time / FIREWORKS_DURATION;
+  let x = 0;
+  let y = 0;
   v = v >= 1 ? 1 : v;
 
   painter.ctx.fillStyle = 'rgb(0, 0, 50)';
   painter.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
   array.forEach((key, index, array) => {
-    painter.drawCircle({
-      x: key.x,
-      y: key.y,
-      r: 50,
-      w: 1
-    });// end drawCircle
-
     key.balls.forEach((ball, ballIndex, balls) => {
+      if (v != 1)
+        ball.pointY += GRAVITY;
+
+      x = ball.x + ball.pointX * v;
+      y = ball.y + ball.pointY * v;
+
+      painter.ctx.save();
+      ball.pastX.forEach((PointX, pIndex, xPoints) => {
+        painter.ctx.globalAlpha = pIndex / xPoints.length * 0.25;
+        painter.drawCircle({
+          x: PointX,
+          y: ball.pastY[pIndex],
+          r: ball.size,
+          color: ball.color,
+          w: 1
+        });
+      })// end forEach
+      painter.ctx.restore();
+
       painter.drawCircle({
-        x: ball.x + ball.pointX * v,
-        y: ball.y + ball.pointY * v,
+        x: x,
+        y: y,
         r: ball.size,
         color: ball.color,
         w: 1
       });// end drawCircle
+      ball.pastX.push(x);
+      ball.pastY.push(y);
     });// end forEach
   });// end forEach
+
+  if (time > FIREWORKS_DURATION + 500)
+    array.shift();
 }// end drawFireworks
 
 const masterDraw = () => {

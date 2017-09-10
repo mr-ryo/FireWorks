@@ -15,6 +15,8 @@ export default class Ball {
     this.y = param.y;   // y座標
     this.pointX = 0;
     this.pointY = 0;
+    this.pastX = [];// 過去のx座標
+    this.pastY = [];// 過去のy座標
   }// end constructor
 
 };// end Ball
