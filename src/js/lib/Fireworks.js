@@ -4,8 +4,8 @@
 
 import Ball from './Ball';
 
-const INITIAL_SIZE = 50;
-const SPREAD = 10;
+const INITIAL_SIZE = 100;
+const SPREAD = 5;
 
 export default class Fireworks {
 
@@ -17,11 +17,16 @@ export default class Fireworks {
   }// end constructor
 
   addBalls () {
+    let x;
+    let y;
+
     for (let i = 0, size = this.volume; i < size; ++i) {
+      [x, y] = this.calcStartPoint(this.x, this.y);
+
       this.balls.push(new Ball({
-        x: Math.floor(Math.random() * INITIAL_SIZE + (this.x - INITIAL_SIZE * 0.5)),
-        y: Math.floor(Math.random() * INITIAL_SIZE + (this.y - INITIAL_SIZE * 0.5)),
-        color: 'rgb(255, 255, 0)',
+        x: x,
+        y: y,
+        color: 'rgb(150, 255, 255)',
         size: 2
       }));// end push
     }// end for
@@ -42,6 +47,23 @@ export default class Fireworks {
     });// end forEach
   }// end separatBalls
 
+  calcStartPoint (x1, y1) {
+    let x2;
+    let y2;
+    let distance;
+
+    while (true) {
+      x2 = Math.floor(Math.random() * INITIAL_SIZE + (x1 - INITIAL_SIZE * 0.5));
+      y2 = Math.floor(Math.random() * INITIAL_SIZE + (y1 - INITIAL_SIZE * 0.5));
+      distance = getDistanceFromPoints({x: x1, y: y1}, {x: x2, y: y2});
+
+      if (distance <= INITIAL_SIZE * 0.5)
+        break;
+    }// end while
+
+    return [x2, y2];
+  }// end calcStartPoint
+
   calcDistance () {
     this.balls.forEach((ball, index, array) => {
       ball.distance = getDistanceFromPoints(ball, {x: this.x, y: this.y});
@@ -50,7 +72,7 @@ export default class Fireworks {
 
   calcAngle () {
     this.balls.forEach((ball, index, array) => {
-      ball.angle = getAngleFromPoints(ball, {x: this.x, y: this.y});
+      ball.angle = getAngleFromPoints({x: this.x, y: this.y}, ball);
     });// end forEach
   }// end calcAngle
 
@@ -63,7 +85,6 @@ export default class Fireworks {
 
 function getAngleFromPoints(p1, p2) {
   const radian = Math.atan2(p2.y - p1.y, p2.x - p1.x);
-  // return radian * 180 / Math.PI;
   return radian;
 }// end getAngleFromPoints
 

@@ -15,7 +15,8 @@ const painter = new Painter({
 const timestamp = new Timestamp({
 });// end timestamp
 
-const FIREWORKS_DURATION = 1000;
+const FIREWORKS_DURATION = 500;
+const FIREWORKS_VOLUME = 1000;
 
 const fireworks = [];
 
@@ -23,7 +24,7 @@ const addFireworks = () => {
   fireworks.push(new Fireworks({
     x: canvasWidth * 0.5,
     y: canvasHeight * 0.5,
-    volume: 100
+    volume: FIREWORKS_VOLUME
   }));// end push
 
   fireworks[0].addBalls();

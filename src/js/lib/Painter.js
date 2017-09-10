@@ -17,7 +17,6 @@ export default class Painter {
     this.ctx.fillStyle = color;
     this.ctx.beginPath();
     this.ctx.arc(x, y, r, startAngle, endAngle, false);
-    // this.ctx.stroke();
     this.ctx.fill();
   }// end drawCircle
 };// end Painter
