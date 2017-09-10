@@ -5,7 +5,7 @@
 import Ball from './Ball';
 
 const INITIAL_SIZE = 50;
-const SPREAD = 7;
+const SPREAD = 6;
 
 export default class Fireworks {
 

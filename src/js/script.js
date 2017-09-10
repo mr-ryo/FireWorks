@@ -15,9 +15,11 @@ const painter = new Painter({
 const timestamp = new Timestamp({
 });// end timestamp
 
-const FIREWORKS_DURATION = 1000;
-const FIREWORKS_VOLUME = 1000;
-const GRAVITY = 1;
+const FIREWORKS_DURATION = 1100;
+const FIREWORKS_FADEOUT = 750;
+const FIREWORKS_VOLUME = 300;
+const GRAVITY = 2;
+const LOCUS_COE = 0.2;
 
 const fireworks = [];
 
@@ -38,25 +40,28 @@ const addFireworks = () => {
 
 const drawFireworks = (array) => {
   const time = timestamp.calcTime();
-  let v = time / FIREWORKS_DURATION;
+  let v1 = time / FIREWORKS_DURATION;
+  let v2 = (time - FIREWORKS_DURATION) / FIREWORKS_FADEOUT;
   let x = 0;
   let y = 0;
-  v = v >= 1 ? 1 : v;
+  v1 = v1 >= 1 ? 1 : v1;
+  v2 = v2 >= 0 ? v2 : 0;
+  v2 = v2 >= 1 ? 1 : v2;
 
   painter.ctx.fillStyle = 'rgb(0, 0, 50)';
   painter.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
   array.forEach((key, index, array) => {
     key.balls.forEach((ball, ballIndex, balls) => {
-      if (v != 1)
+      if (v1 != 1)
         ball.pointY += GRAVITY;
 
-      x = ball.x + ball.pointX * v;
-      y = ball.y + ball.pointY * v;
+      x = ball.x + ball.pointX * v1;
+      y = ball.y + ball.pointY * v1;
 
       painter.ctx.save();
       ball.pastX.forEach((PointX, pIndex, xPoints) => {
-        painter.ctx.globalAlpha = pIndex / xPoints.length * 0.25;
+        painter.ctx.globalAlpha = (1 - v2) * (pIndex / xPoints.length * LOCUS_COE);
         painter.drawCircle({
           x: PointX,
           y: ball.pastY[pIndex],
@@ -65,8 +70,8 @@ const drawFireworks = (array) => {
           w: 1
         });
       })// end forEach
-      painter.ctx.restore();
 
+      painter.ctx.globalAlpha = (1 - v2);
       painter.drawCircle({
         x: x,
         y: y,
@@ -74,12 +79,13 @@ const drawFireworks = (array) => {
         color: ball.color,
         w: 1
       });// end drawCircle
+      painter.ctx.restore();
       ball.pastX.push(x);
       ball.pastY.push(y);
     });// end forEach
   });// end forEach
 
-  if (time > FIREWORKS_DURATION + 500)
+  if (time > FIREWORKS_DURATION + FIREWORKS_FADEOUT)
     array.shift();
 }// end drawFireworks
 
