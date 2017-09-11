@@ -17,7 +17,7 @@ const timestamp = new Timestamp({
 
 const FIREWORKS_DURATION = 1000;
 const FIREWORKS_FADEOUT = 250;
-const FIREWORKS_VOLUME = 325;
+const FIREWORKS_VOLUME = 300;
 const GRAVITY = 1.15;
 const LOCUS_LIMIT = 11;
 const LOCUS_COE = 0.3;
@@ -32,24 +32,25 @@ const addFireworks = () => {
   }));// end push
 
   fireworks[0].addBalls();
-  fireworks[0].separatBalls();
   fireworks[0].calcDistance();
   fireworks[0].calcAngle();
   fireworks[0].calcPoint();
+  fireworks[0].separatColor();
   timestamp.addTime();
 }// end addFireworks
 
 const drawFireworks = (array) => {
   const time = timestamp.calcTime();
-  let v1 = time / FIREWORKS_DURATION;
-  let v2 = (time - FIREWORKS_DURATION + FIREWORKS_FADEOUT) / FIREWORKS_FADEOUT;
   let x = 0;
   let y = 0;
+  let alpha = 0;
+  let v1 = time / FIREWORKS_DURATION;
+  let v2 = (time - FIREWORKS_DURATION + FIREWORKS_FADEOUT) / FIREWORKS_FADEOUT;
   v1 = v1 >= 1 ? 1 : v1;
   v2 = v2 >= 0 ? v2 : 0;
   v2 = v2 >= 1 ? 1 : v2;
 
-  painter.ctx.fillStyle = 'rgb(0, 0, 50)';
+  painter.ctx.fillStyle = 'rgb(0, 0, 40)';
   painter.ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
   array.forEach((key, index, array) => {
@@ -62,7 +63,9 @@ const drawFireworks = (array) => {
 
       painter.ctx.save();
       ball.pastX.forEach((PointX, pIndex, xPoints) => {
-        painter.ctx.globalAlpha = (1 - v2) * (pIndex / xPoints.length * LOCUS_COE);
+        alpha = (1 - v2) * (pIndex / xPoints.length * LOCUS_COE);
+
+        painter.ctx.globalAlpha = alpha;
         painter.drawCircle({
           x: PointX,
           y: ball.pastY[pIndex],

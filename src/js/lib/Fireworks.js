@@ -4,8 +4,19 @@
 
 import Ball from './Ball';
 
-const INITIAL_SIZE = 40;
+const INITIAL_SIZE = 40;// 直径
 const SPREAD = 6.5;
+const BALL_SIZE = 3;
+const START_COLOR = {
+  R: 150,
+  G: 255,
+  B: 255
+}// end START_COLOR
+const END_COLOR = {
+  R: 255,
+  G: 200,
+  B: 200
+}// end END_COLOR
 
 export default class Fireworks {
 
@@ -26,8 +37,8 @@ export default class Fireworks {
       this.balls.push(new Ball({
         x: x,
         y: y,
-        color: 'rgb(150, 255, 255)',
-        size: 2
+        color: 'rgb('+ START_COLOR.R +','+ START_COLOR.G +','+ START_COLOR.B +')',
+        size: BALL_SIZE
       }));// end push
 
       this.balls[this.balls.length - 1].pastX.push(x);
@@ -35,20 +46,12 @@ export default class Fireworks {
     }// end for
   }// end addBalls
 
-  separatBalls () {
+  separatColor () {
     this.balls.forEach((ball, index, array) => {
-      if (ball.x > this.x)
-        if (ball.y > this.y)
-          ball.separat = 0;
-        else
-          ball.separat = 1;
-      else
-        if (ball.y > this.y)
-          ball.separat = 2;
-        else
-          ball.separat = 3;
+      if (ball.distance > INITIAL_SIZE * 0.5 * 0.6)
+        ball.color = 'rgb('+ END_COLOR.R +','+ END_COLOR.G +','+ END_COLOR.B +')';
     });// end forEach
-  }// end separatBalls
+  }// end separatColor
 
   calcStartPoint (x1, y1) {
     let x2;
