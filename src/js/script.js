@@ -15,11 +15,12 @@ const painter = new Painter({
 const timestamp = new Timestamp({
 });// end timestamp
 
-const FIREWORKS_DURATION = 1100;
-const FIREWORKS_FADEOUT = 750;
-const FIREWORKS_VOLUME = 300;
-const GRAVITY = 2;
-const LOCUS_COE = 0.2;
+const FIREWORKS_DURATION = 1000;
+const FIREWORKS_FADEOUT = 250;
+const FIREWORKS_VOLUME = 325;
+const GRAVITY = 1.15;
+const LOCUS_LIMIT = 11;
+const LOCUS_COE = 0.3;
 
 const fireworks = [];
 
@@ -41,7 +42,7 @@ const addFireworks = () => {
 const drawFireworks = (array) => {
   const time = timestamp.calcTime();
   let v1 = time / FIREWORKS_DURATION;
-  let v2 = (time - FIREWORKS_DURATION) / FIREWORKS_FADEOUT;
+  let v2 = (time - FIREWORKS_DURATION + FIREWORKS_FADEOUT) / FIREWORKS_FADEOUT;
   let x = 0;
   let y = 0;
   v1 = v1 >= 1 ? 1 : v1;
@@ -70,22 +71,19 @@ const drawFireworks = (array) => {
           w: 1
         });
       })// end forEach
-
-      painter.ctx.globalAlpha = (1 - v2);
-      painter.drawCircle({
-        x: x,
-        y: y,
-        r: ball.size,
-        color: ball.color,
-        w: 1
-      });// end drawCircle
       painter.ctx.restore();
+
+      if (ball.pastX.length >= LOCUS_LIMIT) {
+        ball.pastX.shift();
+        ball.pastY.shift();
+      }// end if
+
       ball.pastX.push(x);
       ball.pastY.push(y);
     });// end forEach
   });// end forEach
 
-  if (time > FIREWORKS_DURATION + FIREWORKS_FADEOUT)
+  if (time > FIREWORKS_DURATION)
     array.shift();
 }// end drawFireworks
 

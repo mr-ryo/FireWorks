@@ -4,8 +4,8 @@
 
 import Ball from './Ball';
 
-const INITIAL_SIZE = 50;
-const SPREAD = 6;
+const INITIAL_SIZE = 40;
+const SPREAD = 6.5;
 
 export default class Fireworks {
 
@@ -27,7 +27,7 @@ export default class Fireworks {
         x: x,
         y: y,
         color: 'rgb(150, 255, 255)',
-        size: 1.5
+        size: 2
       }));// end push
 
       this.balls[this.balls.length - 1].pastX.push(x);
